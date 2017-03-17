@@ -193,6 +193,8 @@ PRODUCT_PACKAGES += \
 # Gello
 PRODUCT_PACKAGES += \
     Gello
+	
+WITH_GELLO_SOURCE := true
 
 # GPS
 PRODUCT_PACKAGES += \
