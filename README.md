@@ -2,6 +2,8 @@ Copyright (C) 2016 - The CyanogenMod Project
 
 Copyright (C) 2017 - The LineageOS Project
 
+Copyright (C) 2017 - The SudaMod Project
+
 Unified device configuration for OnePlus 3/3T
 ==============
 
