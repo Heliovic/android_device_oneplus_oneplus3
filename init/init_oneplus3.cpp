@@ -31,13 +31,15 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <fcntl.h>
+#include <android-base/logging.h>
+#include <android-base/properties.h>
 #define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
 #include <sys/_system_properties.h>
 
-#include "vendor_init.h"
 #include "property_service.h"
-#include "log.h"
-#include "util.h"
+#include "vendor_init.h"
+
+using android::init::property_set;
 
 void property_override(char const prop[], char const value[])
 {
@@ -59,7 +61,7 @@ static int read_file2(const char *fname, char *data, int max_size)
 
     fd = open(fname, O_RDONLY);
     if (fd < 0) {
-        ERROR("failed to open '%s'\n", fname);
+        LOG(ERROR) << "failed to open '" << fname << "'";
         return 0;
     }
 
@@ -104,23 +106,32 @@ void init_alarm_boot_properties()
 
 void load_op3(const char *model) {
     property_override("ro.product.model", model);
+    property_override("ro.vendor.product.model", model);
     property_override("ro.build.product", "OnePlus3");
     property_override("ro.product.device", "OnePlus3");
-    property_override("ro.build.description", "OnePlus3-user 7.1.1 NMF26F 95 dev-keys");
-    property_override("ro.build.fingerprint", "OnePlus/OnePlus3/OnePlus3:7.1.1/NMF26F/09151000:user/release-keys");
+    property_override("ro.vendor.product.device", "OnePlus3");
+    property_override("ro.build.description", "OnePlus3-user 8.0.0 OPR6.170623.013 77 release-keys");
+    property_override("ro.build.fingerprint", "OnePlus/OnePlus3/OnePlus3:8.0.0/OPR6.170623.013/10250816:user/release-keys");
 }
 
 void load_op3t(const char *model) {
     property_override("ro.product.model", model);
+    property_override("ro.vendor.product.model", model);
     property_override("ro.build.product", "OnePlus3");
     property_override("ro.product.device", "OnePlus3T");
+<<<<<<< HEAD
     property_override("ro.build.description", "OnePlus3-user 7.1.1 NMF26F 83 dev-keys");
     property_override("ro.build.fingerprint", "OnePlus/OnePlus3/OnePlus3T:7.1.1/NMF26F/09151130:user/release-keys");
+=======
+    property_override("ro.vendor.product.device", "OnePlus3T");
+    property_override("ro.build.description", "OnePlus3-user 8.0.0 OPR6.170623.013 83 release-keys");
+    property_override("ro.build.fingerprint", "OnePlus/OnePlus3/OnePlus3T:8.0.0/OPR6.170623.013/10250816:user/release-keys");
+>>>>>>> 4d8bba2a92b4f83b01ca151f3190f2b553ab6239
     property_set("ro.power_profile.override", "power_profile_3t");
 }
 
 void vendor_load_properties() {
-    int rf_version = stoi(property_get("ro.boot.rf_version"));
+    int rf_version = stoi(android::base::GetProperty("ro.boot.rf_version", ""));
 
     switch (rf_version) {
     case 11:
@@ -156,7 +167,7 @@ void vendor_load_properties() {
         property_set("persist.radio.force_on_dc", "true");
         break;
     default:
-        INFO("%s: unexcepted rf version!\n", __func__);
+        LOG(ERROR) << __func__ << ": unexcepted rf version!";
     }
 
     init_alarm_boot_properties();

@@ -27,9 +27,9 @@ INITIAL_COPYRIGHT_YEAR=2016
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
 
-CM_ROOT="$MY_DIR"/../../..
+LINEAGE_ROOT="$MY_DIR"/../../..
 
-HELPER="$CM_ROOT"/vendor/cm/build/tools/extract_utils.sh
+HELPER="$LINEAGE_ROOT"/vendor/lineage/build/tools/extract_utils.sh
 if [ ! -f "$HELPER" ]; then
     echo "Unable to find helper script at $HELPER"
     exit 1
@@ -37,19 +37,20 @@ fi
 . "$HELPER"
 
 # Initialize the helper
-setup_vendor "$DEVICE" "$VENDOR" "$CM_ROOT"
+setup_vendor "$DEVICE" "$VENDOR" "$LINEAGE_ROOT"
 
 # Copyright headers and guards
 write_headers
 
-write_makefiles "$MY_DIR"/proprietary-files.txt
+# The standard blobs
+write_makefiles "$MY_DIR"/proprietary-files.txt true
 
 # Qualcomm BSP blobs - we put a conditional around here
 # in case the BSP is actually being built
 printf '\n%s\n' "ifeq (\$(QCPATH),)" >> "$PRODUCTMK"
 printf '\n%s\n' "ifeq (\$(QCPATH),)" >> "$ANDROIDMK"
 
-write_makefiles "$MY_DIR"/proprietary-files-qc.txt
+write_makefiles "$MY_DIR"/proprietary-files-qc.txt true
 
 # Qualcomm performance blobs - conditional as well
 # in order to support Cyanogen OS builds
@@ -66,7 +67,7 @@ endif
 ifneq (\$(TARGET_HAVE_QC_PERF),true)
 EOF
 
-write_makefiles "$MY_DIR"/proprietary-files-qc-perf.txt
+write_makefiles "$MY_DIR"/proprietary-files-qc-perf.txt true
 
 echo "endif" >> "$PRODUCTMK"
 

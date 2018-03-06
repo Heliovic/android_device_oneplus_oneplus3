@@ -58,20 +58,16 @@ TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := kryo
 
-ENABLE_CPUSETS := true
-
 TARGET_USES_64_BIT_BINDER := true
 
 # Kernel
 BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 cma=32M@0-0xffffffff
+#BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x80000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_TAGS_OFFSET := 0x02000000
 BOARD_RAMDISK_OFFSET     := 0x02200000
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
-TARGET_KERNEL_APPEND_DTB := true
-TARGET_KERNEL_ARCH := arm64
-TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_SOURCE := kernel/oneplus/msm8996
 TARGET_KERNEL_CONFIG := lineageos_oneplus3_defconfig
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
@@ -91,6 +87,7 @@ AUDIO_FEATURE_ENABLED_ANC_HEADSET := true
 AUDIO_FEATURE_ENABLED_AUDIOSPHERE := true
 AUDIO_FEATURE_ENABLED_COMPRESS_VOIP := true
 AUDIO_FEATURE_ENABLED_DEV_ARBI := true
+#AUDIO_FEATURE_ENABLED_DYNAMIC_LOG := true
 AUDIO_FEATURE_ENABLED_EXTN_FORMATS := true
 AUDIO_FEATURE_ENABLED_FLAC_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_FLUENCE := true
@@ -124,10 +121,7 @@ USE_DEVICE_SPECIFIC_CAMERA := true
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
-
-# CM Hardware
-BOARD_HARDWARE_CLASS += $(PLATFORM_PATH)/cmhw
-TARGET_TAP_TO_WAKE_NODE := "/proc/touchpanel/double_tap_enable"
+WITH_LINEAGE_CHARGER := false
 
 # CNE and DPM
 BOARD_USES_QCNE := true
@@ -149,20 +143,27 @@ MAX_VIRTUAL_DISPLAY_DIMENSION := 4096
 TARGET_FORCE_HWC_FOR_VIRTUAL_DISPLAYS := true
 VSYNC_EVENT_PHASE_OFFSET_NS := 2000000
 SF_VSYNC_EVENT_PHASE_OFFSET_NS := 6000000
-#TARGET_USES_HWC2 := true
+TARGET_USES_HWC2 := true
+TARGET_USES_GRALLOC1 := true
+TARGET_USES_QCOM_DISPLAY_BSP := true
 
 # Enable dexpreopt to speed boot time
 ifeq ($(HOST_OS),linux)
-  ifeq ($(call match-word-in-list,$(TARGET_BUILD_VARIANT),user),true)
+  ifneq ($(TARGET_BUILD_VARIANT),eng)
     ifeq ($(WITH_DEXPREOPT),)
       WITH_DEXPREOPT := true
+      WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := true
     endif
   endif
 endif
 
+# Filesystem
+TARGET_FS_CONFIG_GEN := $(PLATFORM_PATH)/config.fs
+TARGET_EXFAT_DRIVER := exfat
+
 # GPS
-TARGET_NO_RPC := true
 USE_DEVICE_SPECIFIC_GPS := true
+BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := default
 
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_oneplus3
@@ -175,12 +176,20 @@ TARGET_PROVIDES_KEYMASTER := true
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
 
+# Lineage Hardware
+BOARD_HARDWARE_CLASS += $(PLATFORM_PATH)/lineagehw
+
+# Mainfest
+DEVICE_MANIFEST_FILE := $(PLATFORM_PATH)/configs/manifest.xml
+DEVICE_MATRIX_FILE   := $(PLATFORM_PATH)/configs/compatibility_matrix.xml
+
 # Media
+BOARD_SECCOMP_POLICY := $(PLATFORM_PATH)/seccomp
 TARGET_USES_MEDIA_EXTENSIONS := true
 
 # NFC
-TARGET_USES_NQ_NFC := true
 BOARD_NFC_CHIPSET := pn548
+BOARD_NFC_HAL_SUFFIX := $(TARGET_BOARD_PLATFORM)
 
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
@@ -192,13 +201,15 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 57436708864
 BOARD_FLASH_BLOCK_SIZE := 262144
 
 # Power
-TARGET_POWERHAL_VARIANT := none
+TARGET_HAS_NO_WIFI_STATS := true
+TARGET_TAP_TO_WAKE_NODE := "/proc/touchpanel/double_tap_enable"
+TARGET_USES_INTERACTION_BOOST := true
 
 # RIL
 TARGET_RIL_VARIANT := caf
 
 # Recovery
-TARGET_RECOVERY_FSTAB := $(PLATFORM_PATH)/rootdir/etc/fstab.qcom
+TARGET_RECOVERY_FSTAB := $(PLATFORM_PATH)/recovery/recovery.fstab
 BOARD_HAS_LARGE_FILESYSTEM := true
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
@@ -212,11 +223,14 @@ include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += $(PLATFORM_PATH)/sepolicy
 
-# Sensors
-USE_SENSOR_MULTI_HAL := true
+# Shims
+TARGET_LD_SHIM_LIBS := \
+    /system/vendor/lib/hw/camera.msm8996.so|libcamera_shim.so \
+    /system/lib/libcamera_client.so|libcamera_parameters_shim.so
 
-# Timeservice
-BOARD_USES_QC_TIME_SERVICES := true
+# Treble
+#PRODUCT_FULL_TREBLE_OVERRIDE := true
+PRODUCT_VENDOR_MOVE_ENABLED := true
 
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
