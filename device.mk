@@ -1,6 +1,5 @@
 # Copyright (C) 2016 The CyanogenMod Project
 # Copyright (C) 2017 The LineageOS Project
-# Copyright (C) 2017 Kingrealer
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -104,14 +103,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Haters gonna hate..
 PRODUCT_CHARACTERISTICS := nosdcard
 
-# Alipay & WeChat fingerprint payment
+# Alipay
 PRODUCT_PACKAGES += \
-    org.ifaa.android.manager \
-    soter
+    org.ifaa.android.manager
 
 PRODUCT_BOOT_JARS += \
-    org.ifaa.android.manager \
-    soter
+    org.ifaa.android.manager
 
 # Audio
 PRODUCT_PACKAGES += \
