@@ -21,6 +21,9 @@
 # definition file).
 #
 
+# Device was launched with M
+$(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_m.mk)
+
 $(call inherit-product, vendor/oneplus/oneplus3/oneplus3-vendor.mk)
 
 # Overlays
@@ -73,10 +76,6 @@ PRODUCT_COPY_FILES += \
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
-
-# Device was launched with M
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.product.first_api_level=23
 
 # Boot animation
 TARGET_SCREEN_HEIGHT := 1920
@@ -173,7 +172,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.audio.safx.pbe.enabled=true \
     vendor.audio.parser.ip.buffer.size=262144 \
     vendor.audio.hw.aac.encoder=true \
-    persist.vendor.bt.enable.splita2dp=false
+    persist.vendor.bt.enable.splita2dp=false \
+    ro.config.media_vol_steps=25 \
+    ro.config.vc_call_vol_steps=7
 
 # ANT+
 PRODUCT_PACKAGES += \
@@ -473,7 +474,6 @@ PRODUCT_PACKAGES += \
     libQWiFiSoftApCfg \
     libwpa_client \
     hostapd \
-    dhcpcd.conf \
     wificond \
     wifilogd \
     wpa_supplicant \
