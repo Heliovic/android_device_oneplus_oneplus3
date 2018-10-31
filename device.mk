@@ -196,12 +196,8 @@ PRODUCT_PACKAGES += \
     Snap \
     libcamera_parameters_shim \
     libcamera_shim \
-    camera.device@1.0-impl \
-    camera.device@3.2-impl \
     android.hardware.camera.provider@2.4-impl \
-    android.hardware.camera.provider@2.4-service.oneplus3 \
-    vendor.qti.hardware.camera.device@1.0 \
-    vendor.qti.hardware.camera.device@1.0_vendor
+    android.hardware.camera.provider@2.4-service.oneplus3
 
 # Connectivity Engine support (CNE)
 PRODUCT_PACKAGES += \
@@ -355,6 +351,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     libc2dcolorconvert \
     libextmedia_jni \
+    libmm-omxcore \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
@@ -446,10 +443,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.vibrator@1.0-impl \
     android.hardware.vibrator@1.0-service
-
-# VNDK-SP:
-PRODUCT_PACKAGES += \
-    vndk-sp
 
 # VR
 PRODUCT_PACKAGES += \
